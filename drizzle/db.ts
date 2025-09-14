@@ -1,6 +1,5 @@
-import { getXataClient } from "@/xata";
-import { drizzle } from "drizzle-orm/xata-http";
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import Database from "better-sqlite3";
 
-const xata = getXataClient();
-
-export const db = drizzle(xata);
+const sqlite = new Database("./snapcast.db");
+export const db = drizzle(sqlite);

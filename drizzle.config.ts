@@ -6,8 +6,8 @@ config({path : './.env'});
 export default defineConfig({
     schema: './drizzle/schema.ts',
     out: './drizzle/migrations',
-    dialect: 'postgresql',
+    dialect: 'sqlite',
     dbCredentials: {
-        url: process.env.DATABASE_URL_POSTGRES!,
+        url: './snapcast.db',
     }
 })

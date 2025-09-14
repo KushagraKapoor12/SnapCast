@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 
 export async function middleware(request: NextRequest) {
-  const session = await auth.api.getSession({
-    headers: request.headers,  // pass request.headers
-  });
-
-  if (!session) {
+  // Check for better-auth session token in cookies
+  const sessionToken = request.cookies.get('better-auth.session_token');
+  
+  if (!sessionToken) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 

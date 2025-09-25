@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "tsx scripts/seed.ts",
+    "setup-db": "tsx scripts/setup-db.ts",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {

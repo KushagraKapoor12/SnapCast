@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+<<<<<<< HEAD
 import { auth } from "@/lib/auth";
 import aj from "./lib/arcjet";
 import { detectBot, shield } from "arcjet";
@@ -61,6 +62,15 @@ export async function middleware(request: NextRequest) {
       console.error('Arcjet error:', error);
       // Continue if rate limiting fails
     }
+=======
+
+export async function middleware(request: NextRequest) {
+  // Check for better-auth session token in cookies
+  const sessionToken = request.cookies.get('better-auth.session_token');
+  
+  if (!sessionToken) {
+    return NextResponse.redirect(new URL('/sign-in', request.url));
+>>>>>>> 903d44b6b04d3f17adf954c0f709a70f8f46e290
   }
 
   return NextResponse.next();

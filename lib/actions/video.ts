@@ -192,6 +192,8 @@ export const getTranscript = withErrorHandling(async (videoId: string) => {
 
 export const incrementVideoViews = withErrorHandling(
   async (videoId: string) => {
+    if (!db) throw new Error("Database not available");
+    
     await db
       .update(videos)
       .set({ views: sql`${videos.views} + 1`, updatedAt: new Date() })

@@ -44,9 +44,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: false // Enable TypeScript checking for production
   },
   // Ensure proper serverless function configuration
-  experimental: {
-    serverComponentsExternalPackages: ['better-sqlite3']
-  }
+  serverExternalPackages: ['better-sqlite3']
 };
 
 export default nextConfig;

@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/drizzle/db";
+import { db, getDb } from "@/drizzle/db";
 import { videos, user } from "@/drizzle/schema";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
@@ -51,14 +51,17 @@ const getSessionUserId = async (): Promise<string> => {
   return session.user.id;
 };
 
-const buildVideoWithUserQuery = () =>
-  db
+const getDatabase = () => db || getDb();
+
+const buildVideoWithUserQuery = () => {
+  return getDatabase()
     .select({
       video: videos,
       user: { id: user.id, name: user.name, image: user.image },
     })
     .from(videos)
     .leftJoin(user, eq(videos.userId, user.id));
+};
 
 // Server Actions
 export const getVideoUploadUrl = withErrorHandling(async () => {
@@ -111,7 +114,7 @@ export const saveVideoDetails = withErrorHandling(
     );
 
     const now = new Date();
-    await db.insert(videos).values({
+    await getDatabase().insert(videos).values({
       ...videoDetails,
       videoUrl: `${BUNNY.EMBED_URL}/${BUNNY_LIBRARY_ID}/${videoDetails.videoId}`,
       userId,
@@ -283,7 +286,7 @@ export const deleteVideo = withErrorHandling(
       { method: "DELETE", bunnyType: "storage", expectJson: false }
     );
 
-    await db.delete(videos).where(eq(videos.videoId, videoId));
+    await getDatabase().delete(videos).where(eq(videos.videoId, videoId));
     revalidatePaths(["/", `/video/${videoId}`]);
     return {};
   }

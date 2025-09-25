@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { getAllVideosByUser } from "@/lib/actions/video";
-import { EmptyState, SharedHeader, VideoCard , Header } from "@/components";
+import { EmptyState, SharedHeader, VideoCard } from "@/components";
 
 
 const ProfilePage = async ({ params, searchParams }: ParamsWithSearch) => {

@@ -8,7 +8,6 @@ import arcjet, {
   ArcjetDecision,
   createMiddleware,
 } from "@arcjet/next";
-import { getEnv } from "./utils";
 export {
   detectBot,
   fixedWindow,

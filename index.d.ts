@@ -12,7 +12,7 @@ type VideoFormValues = {
   title: string;
   description: string;
   tags: string;
-  visibility: "string";
+  visibility: "public" | "private";
 };
 
 declare interface FormFieldProps {
@@ -111,7 +111,7 @@ declare interface ImageWithFallbackProps extends Omit<ImageProps, "src"> {
   src: string | null;
 }
 
-type Visibility = string
+type Visibility = "public" | "private";
 
 declare interface VideoDetails {
   videoId: string;

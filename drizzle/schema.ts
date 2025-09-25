@@ -62,6 +62,22 @@ export const verification = sqliteTable("verification", {
     .notNull(),
 });
 
+export const videos = sqliteTable("videos", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),  // instead of uuid()
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  videoUrl: text("video_url").notNull(),
+  videoId: text("video_id").notNull(),
+  thumbnailUrl: text("thumbnail_url").notNull(),
+  visibility: text("visibility").$type<"public" | "private">().notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  views: integer("views").notNull().default(0),
+  duration: integer("duration"),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()).$onUpdate(() => new Date()).notNull(),
+});
 export const schema = {
   user,account,session,verification
 }

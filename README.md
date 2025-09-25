@@ -100,7 +100,7 @@
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/monu808/SnapCast.git
+   git clone https://github.com/shivammmmpatel/SnapCast.git
    cd SnapCast
    ```
 
@@ -131,7 +131,7 @@
    GOOGLE_CLIENT_SECRET=your_google_client_secret
    
    # DATABASE
-   DATABASE_URL_POSTGRES=postgresql://user:password@localhost:5432/snapcast
+   DATABASE_URL_POSTGRES=postgresql://user:password@localhost:xyza/snapcast
    
    # BUNNY CDN
    BUNNY_STORAGE_ACCESS_KEY=your_bunny_storage_key
@@ -216,10 +216,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Arcjet](https://arcjet.com/) - Security and rate limiting
 - [Bunny CDN](https://bunny.net/) - Global content delivery network
 
-## 📧 **Contact**
 
-- **GitHub**: [@monu808](https://github.com/monu808)
-- **Project Link**: [https://github.com/monu808/SnapCast](https://github.com/monu808/SnapCast)
 
 ---
 

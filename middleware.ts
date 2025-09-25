@@ -1,47 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export const runtime = 'edge';
-
-// Define protected routes that require authentication
-const protectedPaths = ['/upload', '/profile'];
-
-// Define paths that should be excluded from any middleware
-const publicPaths = [
-  '/sign-in',
-  '/api/auth',
-  '/_next',
-  '/assets',
-  '/favicon.ico',
-  '/',
-];
+// Use Node.js runtime for better compatibility
+export const runtime = 'nodejs';
 
 export async function middleware(request: NextRequest) {
-  try {
-    const { pathname } = new URL(request.url);
+  const { pathname } = request.nextUrl;
 
-    // Skip middleware for public paths
-    if (publicPaths.some(path => pathname.startsWith(path))) {
-      return NextResponse.next();
-    }
-
-    // Check authentication for protected paths
-    if (protectedPaths.some(path => pathname.startsWith(path))) {
-      // Check for session token in cookies
-      const sessionToken = request.cookies.get('better-auth.session_token');
-      
-      if (!sessionToken) {
-        const signInUrl = new URL('/sign-in', request.url);
-        signInUrl.searchParams.set('callbackUrl', request.url);
-        return NextResponse.redirect(signInUrl);
-      }
-    }
-
-    return NextResponse.next();
-  } catch (error) {
-    console.error('Middleware error:', error);
-    // If middleware fails, allow the request to continue
+  // Skip middleware for API routes, static files, and auth pages
+  if (
+    pathname.startsWith('/api/') ||
+    pathname.startsWith('/_next/') ||
+    pathname.startsWith('/assets/') ||
+    pathname === '/favicon.ico' ||
+    pathname === '/sign-in' ||
+    pathname === '/'
+  ) {
     return NextResponse.next();
   }
+
+  // For protected routes (upload, profile), check for session
+  if (pathname.startsWith('/upload') || pathname.startsWith('/profile')) {
+    const sessionToken = request.cookies.get('better-auth.session_token');
+    
+    if (!sessionToken?.value) {
+      const signInUrl = new URL('/sign-in', request.url);
+      signInUrl.searchParams.set('callbackUrl', pathname);
+      return NextResponse.redirect(signInUrl);
+    }
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {

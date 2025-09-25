@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/drizzle/db";
+import { db, getDb } from "@/drizzle/db";
 import { videos, user } from "@/drizzle/schema";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
@@ -21,6 +21,10 @@ const ACCESS_KEYS = {
 };
 
 const validateWithArcjet = async (fingerPrint: string) => {
+  if (!aj) {
+    return; // Skip validation if Arcjet is not configured
+  }
+  
   const rateLimit = aj.withRule(
     fixedWindow({
       mode: "LIVE",
@@ -47,14 +51,17 @@ const getSessionUserId = async (): Promise<string> => {
   return session.user.id;
 };
 
-const buildVideoWithUserQuery = () =>
-  db
+const getDatabase = () => db || getDb();
+
+const buildVideoWithUserQuery = () => {
+  return getDatabase()
     .select({
       video: videos,
       user: { id: user.id, name: user.name, image: user.image },
     })
     .from(videos)
     .leftJoin(user, eq(videos.userId, user.id));
+};
 
 // Server Actions
 export const getVideoUploadUrl = withErrorHandling(async () => {
@@ -107,7 +114,7 @@ export const saveVideoDetails = withErrorHandling(
     );
 
     const now = new Date();
-    await db.insert(videos).values({
+    await getDatabase().insert(videos).values({
       ...videoDetails,
       videoUrl: `${BUNNY.EMBED_URL}/${BUNNY_LIBRARY_ID}/${videoDetails.videoId}`,
       userId,
@@ -188,6 +195,8 @@ export const getTranscript = withErrorHandling(async (videoId: string) => {
 
 export const incrementVideoViews = withErrorHandling(
   async (videoId: string) => {
+    if (!db) throw new Error("Database not available");
+    
     await db
       .update(videos)
       .set({ views: sql`${videos.views} + 1`, updatedAt: new Date() })
@@ -222,9 +231,9 @@ export const getAllVideosByUser = withErrorHandling(
 
     const conditions = [
       eq(videos.userId, userIdParameter),
-      !isOwner && eq(videos.visibility, "public"),
-      searchQuery.trim() && ilike(videos.title, `%${searchQuery}%`),
-    ].filter(Boolean) as any[];
+      !isOwner ? eq(videos.visibility, "public") : undefined,
+      searchQuery.trim() ? ilike(videos.title, `%${searchQuery}%`) : undefined,
+    ].filter((condition): condition is NonNullable<typeof condition> => condition !== undefined);
 
     const userVideos = await buildVideoWithUserQuery()
       .where(and(...conditions))
@@ -277,7 +286,7 @@ export const deleteVideo = withErrorHandling(
       { method: "DELETE", bunnyType: "storage", expectJson: false }
     );
 
-    await db.delete(videos).where(eq(videos.videoId, videoId));
+    await getDatabase().delete(videos).where(eq(videos.videoId, videoId));
     revalidatePaths(["/", `/video/${videoId}`]);
     return {};
   }

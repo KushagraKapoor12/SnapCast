@@ -7,7 +7,7 @@ import { DEFAULT_VIDEO_CONFIG, DEFAULT_RECORDING_CONFIG } from "@/constants";
 type ApiFetchOptions = {
   method?: string;
   headers?: Record<string, string>;
-  body?: any;
+  body?: string | FormData | Record<string, unknown>;
   expectJson?: boolean;
   bunnyType: "stream" | "storage";
 };
@@ -313,7 +313,7 @@ export function daysAgo(inputDate: Date): string {
 export const createIframeLink = (videoId: string) =>
   `https://iframe.mediadelivery.net/embed/496452/${videoId}?autoplay=true&preload=true`;
 
-export const doesTitleMatch = (videos: any, searchQuery: string) =>
+export const doesTitleMatch = (videos: { title: unknown }, searchQuery: string) =>
   ilike(
     sql`REPLACE(REPLACE(REPLACE(LOWER(${videos.title}), '-', ''), '.', ''), ' ', '')`,
     `%${searchQuery.replace(/[-. ]/g, "").toLowerCase()}%`

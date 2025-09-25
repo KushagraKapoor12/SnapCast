@@ -1,7 +1,7 @@
 export type ApiFetchOptions = {
   method?: string;
   headers?: Record<string, string>;
-  body?: any;
+  body?: string | FormData | Record<string, unknown>;
   expectJson?: boolean;
   bunnyType: "stream" | "storage";
 };

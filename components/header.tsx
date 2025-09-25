@@ -1,10 +1,14 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import {ICONS} from "@/constants";
 import Dropdownlist from "./Dropdownlist";
+import { useState } from "react";
 
 
 const Header = ({subHeader,title,userImg}: SharedHeaderProps) => {
+    const filterOptions = ["All", "Recent", "Popular"];
+    const [selectedFilter, setSelectedFilter] = useState<string>(filterOptions[0]);
     return (
         <header className="header">
             <section className="header-container">
@@ -44,7 +48,16 @@ const Header = ({subHeader,title,userImg}: SharedHeaderProps) => {
                     <Image src="/assets/icons/search.svg" alt="search" height={16} width={16}/>         
                       </div>
                     
-             <Dropdownlist/>
+             <Dropdownlist
+               options={filterOptions}
+               selectedOption={selectedFilter}
+               onOptionSelect={setSelectedFilter}
+               triggerElement={
+                 <button className="px-3 py-2.5 text-sm font-medium -tracking-[0.8px] rounded-md border border-gray-20">
+                   {selectedFilter}
+                 </button>
+               }
+             />
 
             </section>
             </header>

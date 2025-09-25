@@ -13,4 +13,4 @@ export function getDb() {
 }
 
 // For compatibility with existing imports
-export const db = typeof process !== 'undefined' ? getDb() : null;
+export const db = getDb();

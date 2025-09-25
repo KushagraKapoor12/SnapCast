@@ -2,8 +2,8 @@ import { redirect } from "next/navigation";
 import { VideoDetailHeader, VideoInfo, VideoPlayer } from "@/components";
 import { getTranscript, getVideoById } from "@/lib/actions/video";
 
-const page = async ({ params }: { params: { videoid: string } }) => {
-  const { videoid } = params; 
+const page = async ({ params }: { params: Promise<{ videoid: string }> }) => {
+  const { videoid } = await params; 
 
   const result = await getVideoById(videoid);
 

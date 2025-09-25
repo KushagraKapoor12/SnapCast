@@ -7,14 +7,14 @@ import ip from "@arcjet/ip";
 
 export const runtime = "nodejs";
 
-const emailValidation = aj.withRule(
+const emailValidation = aj?.withRule(
   validateEmail({
     mode: "LIVE",
     block: ["DISPOSABLE", "INVALID", "NO_MX_RECORDS"],
   })
 );
 
-const rateLimit = aj.withRule(
+const rateLimit = aj?.withRule(
   slidingWindow({
     mode: "LIVE",
     interval: "2m",
@@ -24,9 +24,12 @@ const rateLimit = aj.withRule(
 );
 
 // Auth protection
-const protectedAuth = async (req: NextRequest, body?: any): Promise<ArcjetDecision> => {
-  const session = await auth.api.getSession({ headers: req.headers });
+const protectedAuth = async (req: NextRequest, body?: Record<string, unknown>): Promise<ArcjetDecision | null> => {
+  if (!aj || !emailValidation || !rateLimit) {
+    return null; // Skip arcjet protection if not configured
+  }
 
+  const session = await auth.api.getSession({ headers: req.headers });
   const userId = session?.user?.id ?? ip(req) ?? "127.0.0.1";
 
   if (req.nextUrl.pathname.startsWith("/api/auth/sign-in") && typeof body?.email === "string") {
@@ -45,7 +48,7 @@ export const POST = async (req: NextRequest) => {
   const body = await req.json().catch(() => null);
   const decision = await protectedAuth(req, body);
 
-  if (decision.isDenied()) {
+  if (decision && decision.isDenied()) {
     if (decision.reason.isEmail()) {
       return new Response(JSON.stringify({ error: "Invalid email address." }), { status: 400 });
     }

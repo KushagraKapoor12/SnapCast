@@ -21,6 +21,10 @@ const ACCESS_KEYS = {
 };
 
 const validateWithArcjet = async (fingerPrint: string) => {
+  if (!aj) {
+    return; // Skip validation if Arcjet is not configured
+  }
+  
   const rateLimit = aj.withRule(
     fixedWindow({
       mode: "LIVE",
@@ -222,9 +226,9 @@ export const getAllVideosByUser = withErrorHandling(
 
     const conditions = [
       eq(videos.userId, userIdParameter),
-      !isOwner && eq(videos.visibility, "public"),
-      searchQuery.trim() && ilike(videos.title, `%${searchQuery}%`),
-    ].filter(Boolean) as any[];
+      !isOwner ? eq(videos.visibility, "public") : undefined,
+      searchQuery.trim() ? ilike(videos.title, `%${searchQuery}%`) : undefined,
+    ].filter((condition): condition is NonNullable<typeof condition> => condition !== undefined);
 
     const userVideos = await buildVideoWithUserQuery()
       .where(and(...conditions))

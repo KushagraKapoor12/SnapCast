@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-<<<<<<< HEAD
 import { auth } from "@/lib/auth";
-import aj from "./lib/arcjet";
-import { detectBot, shield } from "arcjet";
-import { createMiddleware } from "@arcjet/next";
 
 export const runtime = 'nodejs';
 
@@ -38,39 +34,6 @@ export async function middleware(request: NextRequest) {
       signInUrl.searchParams.set('callbackUrl', request.url);
       return NextResponse.redirect(signInUrl);
     }
-  }
-
-  // Optional: Apply rate limiting only if Arcjet is configured
-  if (aj) {
-    try {
-      const validate = aj
-        .withRule(shield({ mode: 'LIVE' }))
-        .withRule(
-          detectBot({
-            mode: 'LIVE',
-            allow: ['CATEGORY:SEARCH_ENGINE', 'G00G1E_CRAWLER']
-          })
-        );
-      
-      const req = await request.clone();
-      const decision = await validate.protect(req);
-      
-      if (decision.isDenied()) {
-        return new NextResponse('Too Many Requests', { status: 429 });
-      }
-    } catch (error) {
-      console.error('Arcjet error:', error);
-      // Continue if rate limiting fails
-    }
-=======
-
-export async function middleware(request: NextRequest) {
-  // Check for better-auth session token in cookies
-  const sessionToken = request.cookies.get('better-auth.session_token');
-  
-  if (!sessionToken) {
-    return NextResponse.redirect(new URL('/sign-in', request.url));
->>>>>>> 903d44b6b04d3f17adf954c0f709a70f8f46e290
   }
 
   return NextResponse.next();

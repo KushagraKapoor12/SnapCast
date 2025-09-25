@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Fix Turbopack root path issue
+  turbopack: {
+    root: __dirname,
+  },
   images: {
     remotePatterns: [
       {

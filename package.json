@@ -8,7 +8,8 @@
     "build:turbo": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "seed": "tsx scripts/seed.ts"
+    "seed": "tsx scripts/seed.ts",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@arcjet/inspect": "^1.0.0-beta.11",

@@ -37,15 +37,15 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**"
       }
-    ],
-    domains: [
-      "sp-snapcast.b-cdn.net",
-      "storage.bunnycdn.com",
-      "iframe.mediadelivery.net"
     ]
   },
+  // Remove domains property as it's deprecated
   typescript: {
-    ignoreBuildErrors: true
+    ignoreBuildErrors: false // Enable TypeScript checking for production
+  },
+  // Ensure proper serverless function configuration
+  experimental: {
+    serverComponentsExternalPackages: ['better-sqlite3']
   }
 };
 

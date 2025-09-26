@@ -1,7 +1,7 @@
 "use server";
 
-import { db, getDb } from "@/drizzle/db";
-import { videos, user } from "@/drizzle/schema";
+import { getDb } from "@/drizzle/db";
+import { videos, user } from "@/drizzle/schema-postgres";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { and, desc, eq, ilike, or, sql } from "drizzle-orm";
@@ -51,7 +51,7 @@ const getSessionUserId = async (): Promise<string> => {
   return session.user.id;
 };
 
-const getDatabase = () => db || getDb();
+const getDatabase = () => getDb();
 
 const buildVideoWithUserQuery = () => {
   return getDatabase()
@@ -149,7 +149,7 @@ export const getAllVideos = withErrorHandling(async (
       : canSeeTheVideos
 
     // Count total for pagination
-    const [{ totalCount }] = await db
+    const [{ totalCount }] = await getDb()
       .select({ totalCount: sql<number>`count(*)` })
       .from(videos)
       .where(whereCondition);
@@ -194,10 +194,8 @@ export const getTranscript = withErrorHandling(async (videoId: string) => {
 });
 
 export const incrementVideoViews = withErrorHandling(
-  async (videoId: string) => {
-    if (!db) throw new Error("Database not available");
-    
-    await db
+  async (videoId: string) => {    
+    await getDb()
       .update(videos)
       .set({ views: sql`${videos.views} + 1`, updatedAt: new Date() })
       .where(eq(videos.videoId, videoId));
@@ -218,7 +216,7 @@ export const getAllVideosByUser = withErrorHandling(
     )?.user.id;
     const isOwner = userIdParameter === currentUserId;
 
-    const [userInfo] = await db
+    const [userInfo] = await getDb()
       .select({
         id: user.id,
         name: user.name,
@@ -248,7 +246,7 @@ export const getAllVideosByUser = withErrorHandling(
 export const updateVideoVisibility = withErrorHandling(
   async (videoId: string, visibility: Visibility) => {
     await validateWithArcjet(videoId);
-    await db
+    await getDb()
       .update(videos)
       .set({ visibility, updatedAt: new Date() })
       .where(eq(videos.videoId, videoId));

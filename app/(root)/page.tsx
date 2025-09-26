@@ -1,5 +1,6 @@
 import { EmptyState, Pagination, SharedHeader, VideoCard } from "@/components";
 import { getAllVideos } from "@/lib/actions/video";
+import { VideoWithUser } from "@/lib/types";
 
 const page = async ({ searchParams }: SearchParams) => {
   const { query, filter, page } = await searchParams;
@@ -16,7 +17,7 @@ const page = async ({ searchParams }: SearchParams) => {
 
       {videos?.length > 0 ? (
         <section className="video-grid">
-          {videos.map(({ video, user }) => (
+          {videos.map(({ video, user }: VideoWithUser) => (
             <VideoCard
               key={video.id}
               id={video.videoId}

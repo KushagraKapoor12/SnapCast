@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { getAllVideosByUser } from "@/lib/actions/video";
 import { EmptyState, SharedHeader, VideoCard } from "@/components";
+import { VideoWithUser } from "@/lib/types";
 
 
 const ProfilePage = async ({ params, searchParams }: ParamsWithSearch) => {
@@ -21,7 +22,7 @@ const ProfilePage = async ({ params, searchParams }: ParamsWithSearch) => {
 
       {videos?.length > 0 ? (
         <section className="video-grid">
-          {videos.map(({ video }) => (
+          {videos.map(({ video }: VideoWithUser) => (
             <VideoCard
               key={video.id}
               id={video.videoId}

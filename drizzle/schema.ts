@@ -63,7 +63,7 @@ export const verification = sqliteTable("verification", {
 });
 
 export const videos = sqliteTable("videos", {
-  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),  // instead of uuid()
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   title: text("title").notNull(),
   description: text("description").notNull(),
   videoUrl: text("video_url").notNull(),
@@ -78,6 +78,11 @@ export const videos = sqliteTable("videos", {
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()).$onUpdate(() => new Date()).notNull(),
 });
+
 export const schema = {
-  user,account,session,verification
-}
+  user,
+  account,
+  session,
+  verification,
+  videos
+};

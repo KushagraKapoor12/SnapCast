@@ -1,5 +1,5 @@
 import { getDb } from '../drizzle/db';
-import { videos, user } from '../drizzle/schema';
+import { videos, user } from '../drizzle/schema-postgres';
 
 async function seed() {
   const db = getDb();

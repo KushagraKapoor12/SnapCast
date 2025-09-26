@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { ilike, sql } from "drizzle-orm";
-import { videos } from "@/drizzle/schema";
+import { videos } from "@/drizzle/schema-postgres";
 import { DEFAULT_VIDEO_CONFIG, DEFAULT_RECORDING_CONFIG } from "@/constants";
 
 type ApiFetchOptions = {

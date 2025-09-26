@@ -1,13 +1,17 @@
-import { drizzle } from "drizzle-orm/better-sqlite3";
-import Database from "better-sqlite3";
+import { drizzle as drizzlePostgres } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 
-// Create a singleton instance
-let _db: ReturnType<typeof drizzle> | null = null;
+// Create a singleton PostgreSQL instance
+let _db: ReturnType<typeof drizzlePostgres> | null = null;
 
 export function getDb() {
   if (!_db) {
-    const sqlite = new Database("snapcast.db");
-    _db = drizzle(sqlite);
+    if (!process.env.DATABASE_URL) {
+      throw new Error('DATABASE_URL is required for Neon database connection');
+    }
+    console.log('🐘 Using PostgreSQL database (Neon)');
+    const client = postgres(process.env.DATABASE_URL);
+    _db = drizzlePostgres(client);
   }
   return _db;
 }

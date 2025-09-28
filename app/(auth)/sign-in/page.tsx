@@ -2,10 +2,27 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Suspense } from "react";
 
 import { authClient } from "@/lib/auth-client";
 
-const SignIn = () => {
+const SignInContent = () => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
+
+  const handleGoogleSignIn = async () => {
+    const result = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: callbackUrl,
+    });
+    
+    if (result.data) {
+      router.push(callbackUrl);
+    }
+  };
+
   return (
     <main className="sign-in">
       <aside className="testimonial">
@@ -70,11 +87,7 @@ const SignIn = () => {
           </p>
 
           <button
-            onClick={async () => {
-              return await authClient.signIn.social({
-                provider: "google",
-              });
-            }}
+            onClick={handleGoogleSignIn}
           >
             <Image
               src="/assets/icons/google.svg"
@@ -88,6 +101,14 @@ const SignIn = () => {
       </aside>
       <div className="overlay" />
     </main>
+  );
+};
+
+const SignIn = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SignInContent />
+    </Suspense>
   );
 };
 

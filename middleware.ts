@@ -6,27 +6,24 @@ export const runtime = 'nodejs';
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip middleware for API routes, static files, and auth pages
+  // Skip middleware for API routes, static files, and auth pages only
   if (
     pathname.startsWith('/api/') ||
     pathname.startsWith('/_next/') ||
     pathname.startsWith('/assets/') ||
     pathname === '/favicon.ico' ||
-    pathname === '/sign-in' ||
-    pathname === '/'
+    pathname === '/sign-in'
   ) {
     return NextResponse.next();
   }
 
-  // For protected routes (upload, profile), check for session
-  if (pathname.startsWith('/upload') || pathname.startsWith('/profile')) {
-    const sessionToken = request.cookies.get('better-auth.session_token');
-    
-    if (!sessionToken?.value) {
-      const signInUrl = new URL('/sign-in', request.url);
-      signInUrl.searchParams.set('callbackUrl', pathname);
-      return NextResponse.redirect(signInUrl);
-    }
+  // Check for session on all other routes (including root)
+  const sessionToken = request.cookies.get('better-auth.session_token');
+  
+  if (!sessionToken?.value) {
+    const signInUrl = new URL('/sign-in', request.url);
+    signInUrl.searchParams.set('callbackUrl', pathname);
+    return NextResponse.redirect(signInUrl);
   }
 
   return NextResponse.next();

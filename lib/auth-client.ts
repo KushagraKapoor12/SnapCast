@@ -1,6 +1,6 @@
 import { createAuthClient } from "better-auth/react";
 
-// Use BETTER_AUTH_URL for correct backend endpoint
+// Use NEXT_PUBLIC_BASE_URL for client-side auth
 export const authClient = createAuthClient({
-    baseURL: process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_BASE_URL,
+    baseURL: process.env.NEXT_PUBLIC_BASE_URL,
 });

@@ -6,7 +6,7 @@ export const runtime = 'nodejs';
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip middleware for API routes, static files, and auth pages only
+  // Skip middleware for API routes, static files, and auth pages
   if (
     pathname.startsWith('/api/') ||
     pathname.startsWith('/_next/') ||
@@ -17,12 +17,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check for session on all other routes (including root)
-  const sessionToken = request.cookies.get('better-auth.session_token');
-  
-  if (!sessionToken?.value) {
+  // Simple check: if no cookies at all, redirect to sign-in
+  // This avoids the cookie name detection issue
+  if (request.cookies.size === 0) {
     const signInUrl = new URL('/sign-in', request.url);
-    signInUrl.searchParams.set('callbackUrl', pathname);
+    if (pathname !== '/') {
+      signInUrl.searchParams.set('callbackUrl', pathname);
+    }
     return NextResponse.redirect(signInUrl);
   }
 

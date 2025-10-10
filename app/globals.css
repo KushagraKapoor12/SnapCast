@@ -487,7 +487,7 @@
 
   /* video-card */
   .video-card {
-    @apply flex flex-col rounded-2xl w-full border border-gray-20 aspect-[16/9] relative;
+    @apply flex flex-col rounded-2xl w-full border border-gray-20 aspect-[16/9] relative transition-all duration-300 hover:shadow-20 hover:border-pink-100 hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-100 focus-visible:ring-offset-2;
 
     .thumbnail {
       @apply w-full rounded-t-2xl object-cover h-[190px];
@@ -523,7 +523,7 @@
       }
 
       h2 {
-        @apply text-base text-dark-100 font-semibold truncate;
+        @apply text-base text-dark-100 font-semibold;
       }
 
       footer {
@@ -540,7 +540,7 @@
     }
 
     .copy-btn {
-      @apply absolute top-3 right-3 shadow-md hover:shadow-lg transition duration-200 bg-white rounded-full size-6 flex items-center justify-center;
+      @apply absolute top-3 right-3 shadow-md hover:shadow-lg transition-all duration-300 bg-white rounded-full size-6 flex items-center justify-center hover:bg-pink-10;
     }
 
     .duration {

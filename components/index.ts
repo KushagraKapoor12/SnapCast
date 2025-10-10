@@ -10,3 +10,4 @@ export { default as SharedHeader } from "./SharedHeader";
 export { default as EmptyState } from "./EmptyState";
 export { default as DropdownList } from "./Dropdownlist";
 export { default as Pagination } from "./Pagination";
+export { default as LoadingSkeleton } from "./LoadingSkeleton";
